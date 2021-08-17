@@ -8,7 +8,7 @@ public class DataHandler {
         PersistenceManager.manipulateData();
     }
      public void testInterface() throws CustomizedException{
-         PersistenceManager.sqlDB();
+         PersistenceManager.manipulateData();
 
      }
 }
