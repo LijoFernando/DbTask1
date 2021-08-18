@@ -8,7 +8,7 @@ import java.util.List;
 public interface PersistenceManager {
 
     List<AccountInfo> accountInfoRecords() throws CustomizedException;
-    int[] insertDetailToDB (List<Customer> customerArrayList) throws CustomizedException;
+    int[] persistCustomerList (List<Customer> customerArrayList) throws CustomizedException;
     String checkCustomerStatus(Integer cusID) throws CustomizedException;
     void insertAccountToDB(int[] cusID, List<AccountInfo> accountInfoArrayList) throws CustomizedException;
     String deleteCustomer(Integer cusId) throws CustomizedException;

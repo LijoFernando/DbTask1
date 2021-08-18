@@ -1,4 +1,4 @@
-package manageDetails.manageDetails.logicLayer;
+package manageDetails.manageDetails.configuration;
 import manageDetails.manageDetails.BankException.CustomizedException;
 import manageDetails.manageDetails.persistence.PersistenceManager;
 
@@ -6,8 +6,8 @@ import java.io.FileInputStream;
 import java.util.Properties;
 
 public class DataHandler {
-
     private static PersistenceManager prManager;
+
     public static String fileHandler() throws CustomizedException {
         String className = " ";
         try {
@@ -38,7 +38,7 @@ public class DataHandler {
         }
     }
 
-    static PersistenceManager getPersistenceManager() throws CustomizedException {
+    public static PersistenceManager getPersistenceManager() throws CustomizedException {
             if (prManager == null){
               loadClassPersistence();
             }

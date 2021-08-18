@@ -1,25 +1,20 @@
-package manageDetails.manageDetails;
+package manageDetails.manageDetails.processor;
 
 import manageDetails.manageDetails.BankException.CustomizedException;
-import manageDetails.manageDetails.logicLayer.DataHandler;
-import manageDetails.manageDetails.persistence.PersistenceManager;
+import manageDetails.manageDetails.configuration.DataHandler;
 import manageDetails.manageDetails.pojo.AccountInfo;
 
 import java.util.*;
 
-public class AddAccountInfo {
+public class AccountInfoProcessor {
     Scanner input = new Scanner(System.in);
     AccountInfo accountInfo = new AccountInfo();
     ArrayList<AccountInfo> accountInfoArrayList = new ArrayList<>();
 
-
-
     public void addAccountForExistingCustomer(Integer cusID) throws CustomizedException {
-        PersistenceManager pr = DataHandler.
-        String status =  .checkCustomerStatus(cusID);
+        String status = DataHandler.getPersistenceManager().checkCustomerStatus(cusID);
         if(status.equals("Active")) {
             System.out.println(status);
-
         } else {
             System.out.println("Customer Record Deleted");
         }
@@ -44,7 +39,6 @@ public class AddAccountInfo {
         }
         return accountInfoArrayList;
     }
-
 }
 
 

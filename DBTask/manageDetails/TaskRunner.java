@@ -1,20 +1,26 @@
 package manageDetails.manageDetails;
 
+import manageDetails.manageDetails.dbLayer.DBOperation;
 import manageDetails.manageDetails.logicLayer.*;
 
 import manageDetails.manageDetails.BankException.CustomizedException;
+import manageDetails.manageDetails.persistence.PersistenceManager;
+import manageDetails.manageDetails.processor.AccountInfoProcessor;
+import manageDetails.manageDetails.processor.CustomerProcessor;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 public class TaskRunner {
     public static void main(String[] args) throws IOException, CustomizedException {
-        AddCustomer addCustomerDetail = new AddCustomer();
-        AddAccountInfo addAccountInfo = new AddAccountInfo();
+        CustomerProcessor customerProcessorDetail = new CustomerProcessor();
+        AccountInfoProcessor accountInfoProcessor = new AccountInfoProcessor();
         //loaded HashMap From Database
         LoadDataToHMap syncHashMap = new LoadDataToHMap();
+
         try {
             syncHashMap.loadHashMap();
+            PersistenceManager pM = new DBOperation();
         } catch(CustomizedException e) {
             e.printStackTrace();
             e.getCause();
@@ -33,7 +39,7 @@ public class TaskRunner {
 
         if(choice == 1) {
             try {
-                addCustomerDetail.chooseNoOfCustomer();
+                customerProcessorDetail.chooseNoOfCustomer();
             }
             catch (CustomizedException e){
                 System.out.println(e.getMessage());
@@ -45,7 +51,7 @@ public class TaskRunner {
             try {
                 System.out.println("Enter your customer ID");
                 int cusId = input.nextInt();
-                addAccountInfo.addAccountForExistingCustomer(cusId);
+                accountInfoProcessor.addAccountForExistingCustomer(cusId);
 
             } catch(CustomizedException e) {
                 System.out.println( e.getMessage());

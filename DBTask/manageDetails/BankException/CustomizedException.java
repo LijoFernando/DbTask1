@@ -2,6 +2,7 @@ package manageDetails.manageDetails.BankException;
 
 
 public class CustomizedException extends Exception {
+
     public CustomizedException() {
         super();
     }
@@ -12,6 +13,5 @@ public class CustomizedException extends Exception {
 
         public CustomizedException(String s,Throwable error) {
             super(s, error);
-
         }
 }

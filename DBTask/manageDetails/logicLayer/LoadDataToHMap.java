@@ -1,33 +1,28 @@
 package manageDetails.manageDetails.logicLayer;
 
 import manageDetails.manageDetails.BankException.CustomizedException;
+import manageDetails.manageDetails.configuration.DataHandler;
 import manageDetails.manageDetails.persistence.PersistenceManager;
 import manageDetails.manageDetails.pojo.AccountInfo;
 
 import java.util.*;
 
 public class LoadDataToHMap {
-    PersistenceManager pr;
-    HashMap <Integer, HashMap<Long, AccountInfo> > outerHashMap = new HashMap<>();
-
-    public LoadDataToHMap() throws CustomizedException {
-        DataHandler dbHandler = new DataHandler();
-        pr = dbHandler.getPersistenceManager();
-    }
+    static HashMap <Integer, HashMap<Long, AccountInfo> > outerHashMap = new HashMap<>();
 
     public void loadHashMap() throws CustomizedException {
         //load hashMap from DB
-        List<AccountInfo> dbArrayList = pr.accountInfoRecords();
+        List<AccountInfo> dbArrayList = DataHandler.getPersistenceManager().accountInfoRecords();
         try {
-            for (AccountInfo accountinfo : dbArrayList) {
-                int cusId = accountinfo.getCusId();
-                long accNo = accountinfo.getAccNo();
+            for (AccountInfo accInfo : dbArrayList) {
+                int cusId = accInfo.getCusId();
+                long accNo = accInfo.getAccNo();
                 HashMap<Long, AccountInfo> innerHashMap = outerHashMap.get(cusId);
                 if (innerHashMap == null) {
                     innerHashMap = new HashMap<>();
                     outerHashMap.put(cusId, innerHashMap);
                 }
-                innerHashMap.put(accNo, accountinfo);
+                innerHashMap.put(accNo, accInfo);
             }
         }
         catch (Exception e) {

@@ -26,6 +26,7 @@ public class DBOperation implements PersistenceManager {
     private static String insertRecordsToCustomerTable = "insert into CustomerInfo (CusName, CusDoB, Location) values (?, ?, ?)";
     private static String insertRecordsToAccountInfoTable = "insert into AccountInfo (AccNumber, AccBalance, Branch, CusID ) values (?, ?, ?,?)";
 
+    @Override
     public List<AccountInfo> accountInfoRecords() throws CustomizedException {
         List<AccountInfo> accountInfoArray = new ArrayList<>();
         try {
@@ -53,7 +54,7 @@ public class DBOperation implements PersistenceManager {
     }
 
     //insert Customer Info to Database
-    public int[] insertDetailToDB (List<Customer> customerArrayList) throws CustomizedException {
+    public int[] persistCustomerList (List<Customer> customerArrayList) throws CustomizedException {
         ResultSet rs = null;
         try {
             PreparedStatement ps = getConnection().prepareStatement(insertRecordsToCustomerTable, Statement.RETURN_GENERATED_KEYS);
