@@ -12,13 +12,11 @@ public class AddAccountInfo {
     AccountInfo accountInfo = new AccountInfo();
     ArrayList<AccountInfo> accountInfoArrayList = new ArrayList<>();
 
-    public AddAccountInfo() throws CustomizedException {
-        DataHandler dbHandler = new DataHandler();
-         pr = dbHandler.getPersistenceManager();
-    }
+
 
     public void addAccountForExistingCustomer(Integer cusID) throws CustomizedException {
-        String status = pr.checkCustomerStatus(cusID);
+        PersistenceManager pr = DataHandler.
+        String status =  .checkCustomerStatus(cusID);
         if(status.equals("Active")) {
             System.out.println(status);
 
