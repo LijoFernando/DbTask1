@@ -1,32 +1,33 @@
-package manageDetails.manageDetails.persistence;
+package manageDetails.manageDetails.dbLayer;
 
-import manageDetails.manageDetails.PersistanceException.CustomizedException;
+import manageDetails.manageDetails.BankException.CustomizedException;
+import manageDetails.manageDetails.persistence.PersistenceManager;
 import manageDetails.manageDetails.pojo.*;
 
 import  java.sql.*;
-import java.util.ArrayList;
+import java.util.*;
 
 public class DBOperation implements PersistenceManager {
-    private Connection con;
+    private static Connection con;
 
-    private void loadConnection() throws SQLException {
+    private static void loadConnection() throws SQLException {
         con = DriverManager.getConnection("jdbc:mysql://localhost:3306/customer", "root", "Root@123");
     }
 
-    public Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         if (con == null) {
             loadConnection();
         }
         return con;
     }
 
-    //Query
-    private String selectAllRecordsFromAccountInfo = "SELECT * FROM AccountInfo";
-    private String insertRecordsToCustomerTable = "insert into CustomerInfo (CusName, CusDoB, Location) values (?, ?, ?)";
-    private String insertRecordsToAccountInfoTable = "insert into AccountInfo (AccNumber, AccBalance, Branch, CusID ) values (?, ?, ?,?)";
+    //All Query
+    private static String selectAllRecordsFromAccountInfo = "SELECT * FROM AccountInfo";
+    private static String insertRecordsToCustomerTable = "insert into CustomerInfo (CusName, CusDoB, Location) values (?, ?, ?)";
+    private static String insertRecordsToAccountInfoTable = "insert into AccountInfo (AccNumber, AccBalance, Branch, CusID ) values (?, ?, ?,?)";
 
-    public ArrayList<AccountInfo> accountInfoRecords() throws CustomizedException {
-        ArrayList<AccountInfo> accountInfoArray = new ArrayList<>();
+    public List<AccountInfo> accountInfoRecords() throws CustomizedException {
+        List<AccountInfo> accountInfoArray = new ArrayList<>();
         try {
             PreparedStatement ps  = getConnection().prepareStatement(selectAllRecordsFromAccountInfo);
             ResultSet rs  = ps.executeQuery();
@@ -52,7 +53,7 @@ public class DBOperation implements PersistenceManager {
     }
 
     //insert Customer Info to Database
-    public int[] insertDetailToDB (ArrayList<Customer> customerArrayList) throws CustomizedException {
+    public int[] insertDetailToDB (List<Customer> customerArrayList) throws CustomizedException {
         ResultSet rs = null;
         try {
             PreparedStatement ps = getConnection().prepareStatement(insertRecordsToCustomerTable, Statement.RETURN_GENERATED_KEYS);
@@ -87,8 +88,9 @@ public class DBOperation implements PersistenceManager {
         }
 
     }
+
     //customer Check (Active or Inactive)
-    public String checkCustomerStatus(Integer cusID) throws CustomizedException{
+    public String checkCustomerStatus(Integer cusID) throws CustomizedException {
         String query ="select CusStatus from CustomerInfo Where CusId = "+cusID+"";
         ResultSet rs = null;
         try {
@@ -103,8 +105,9 @@ public class DBOperation implements PersistenceManager {
             throw new CustomizedException("Database Connection Error While Checking Customer");
         }
     }
+
     //Insert AccountInfo to Database
-    public void insertAccountToDB(int[] cusID, ArrayList<AccountInfo> accountInfoArrayList) throws CustomizedException {
+    public void insertAccountToDB(int[] cusID, List<AccountInfo> accountInfoArrayList) throws CustomizedException {
             try {
                 PreparedStatement ps =  getConnection().prepareStatement(insertRecordsToAccountInfoTable);
                 try {
@@ -131,14 +134,14 @@ public class DBOperation implements PersistenceManager {
     }
 
     //Delete Customer From Database
-    public String deleteCustomer(Integer cusId) throws CustomizedException{
-        String query="Update CustomerInfo SET CusStatus = 2 WHERE CusId ="+cusId+"";
+    public String deleteCustomer(Integer cusId) throws CustomizedException {
+        String query="Update CustomerInfo SET CusStatus = IF(CusStatus = 1, 2, CusStatus) WHERE CusId ="+cusId+"";
         try {
              Statement st = getConnection().createStatement();
              st.executeUpdate(query);
              return "Customer Deleted Successfully";
         } catch (SQLException e){
-            throw  new CustomizedException("Customer Deletion Failed");
+            throw  new CustomizedException("Customer Deletion Failed // No Records Found");
         }
     }
 }

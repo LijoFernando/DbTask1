@@ -1,27 +1,25 @@
 package manageDetails.manageDetails;
 
-import manageDetails.manageDetails.logicLayer.DataHandler;
-import manageDetails.manageDetails.logicLayer.LoadData;
-import manageDetails.manageDetails.PersistanceException.CustomizedException;
+import manageDetails.manageDetails.logicLayer.*;
 
+import manageDetails.manageDetails.BankException.CustomizedException;
+
+import java.io.IOException;
 import java.util.Scanner;
 
 public class TaskRunner {
-    public static void main(String[] args)  {
+    public static void main(String[] args) throws IOException, CustomizedException {
         AddCustomer addCustomerDetail = new AddCustomer();
         AddAccountInfo addAccountInfo = new AddAccountInfo();
-        DataHandler dataHandler = new DataHandler();
         //loaded HashMap From Database
-        LoadData syncHashMap = new LoadData();
+        LoadDataToHMap syncHashMap = new LoadDataToHMap();
         try {
             syncHashMap.loadHashMap();
-        }catch (CustomizedException e ){
+        } catch(CustomizedException e) {
             e.printStackTrace();
             e.getCause();
-            System.out.println("Databas cannot be loaded");
+            System.out.println(e.getMessage());
         }
-       // System.out.println(syncHashMap.loadHashMap());
-        //-----------------------------------
 
         //Choose the Operation to do!!
         Scanner input = new Scanner(System.in);
@@ -33,7 +31,7 @@ public class TaskRunner {
         System.out.print("Enter ur choice: ");
         int choice = input.nextInt();
 
-        if (choice == 1) {
+        if(choice == 1) {
             try {
                 addCustomerDetail.chooseNoOfCustomer();
             }
@@ -42,14 +40,14 @@ public class TaskRunner {
             }
         }
 
-        else if (choice == 2){
+        else if(choice == 2) {
 
             try {
                 System.out.println("Enter your customer ID");
                 int cusId = input.nextInt();
                 addAccountInfo.addAccountForExistingCustomer(cusId);
 
-            } catch (CustomizedException e){
+            } catch(CustomizedException e) {
                 System.out.println( e.getMessage());
             }
         }
@@ -59,7 +57,7 @@ public class TaskRunner {
             int cusId = input.nextInt();
             try {
                 syncHashMap.loadSpecific(cusId);
-            }catch (CustomizedException e){
+            } catch(CustomizedException e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -67,20 +65,23 @@ public class TaskRunner {
         else if (choice == 4) {
             try {
                 syncHashMap.loadHashMap();
-            }catch (CustomizedException e){
-                System.out.println(e.getMessage());
-            }
-        }
-        else if(choice == 5){
-//            System.out.println("Enter id: ");
-//            int cusId = input.nextInt();
-            try {
-                dataHandler.testInterface();
-            }catch (CustomizedException e){
+            } catch(CustomizedException e) {
                 System.out.println(e.getMessage());
             }
         }
 
+        //Delete Customer From Database
+        else if(choice == 5){
+            System.out.println("Enter CustomerId to Delete");
+            int cusId = input.nextInt();
+            try{
+                DataStoreHelper dataStoreHelper = new DataStoreHelper();
+                dataStoreHelper.deleteCustomerInfo(cusId);
+            } catch (CustomizedException e){
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+            }
+        }
         else {
             System.out.println("Enter Valid Choice");
 

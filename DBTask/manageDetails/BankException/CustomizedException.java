@@ -1,4 +1,4 @@
-package manageDetails.manageDetails.PersistanceException;
+package manageDetails.manageDetails.BankException;
 
 
 public class CustomizedException extends Exception {

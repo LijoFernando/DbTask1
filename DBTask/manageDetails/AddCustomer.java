@@ -1,39 +1,42 @@
 package manageDetails.manageDetails;
 
-import manageDetails.manageDetails.PersistanceException.CustomizedException;
-import manageDetails.manageDetails.persistence.DBOperation;
-import manageDetails.manageDetails.pojo.AccountInfo;
-import manageDetails.manageDetails.pojo.Customer;
+import manageDetails.manageDetails.BankException.CustomizedException;
+import manageDetails.manageDetails.logicLayer.DataHandler;
+import manageDetails.manageDetails.persistence.PersistenceManager;
+import manageDetails.manageDetails.pojo.*;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class AddCustomer {
+        private PersistenceManager pr;
         Scanner input = new Scanner(System.in);
+
         Customer customerInput = null;
         AddAccountInfo addAccountInfo ;
-        DBOperation dbOperation = new DBOperation();
         ArrayList<Customer> customerArrayList;
         ArrayList<AccountInfo> accountInfoArrayList;
 
-
+        public AddCustomer() throws CustomizedException {
+            DataHandler dbHandler = new DataHandler();
+            pr = dbHandler.getPersistenceManager();
+        }
         public void chooseNoOfCustomer() throws CustomizedException {
                 System.out.print("Enter No of Record to insert: ");
                 int noOfRecords = input.nextInt();
                 int[] cusIDs = null;
                 addAccountInfo = new AddAccountInfo();
                 customerArrayList = new ArrayList<>();
-                accountInfoArrayList =new  ArrayList<>();
+                accountInfoArrayList = new  ArrayList<>();
                 try {
                     for (int i = 0; i < noOfRecords; i++) {
                         this.customerInput(i);
                         accountInfoArrayList =  addAccountInfo.accountInput();
                     }
                     cusIDs = insertToDB(customerArrayList);
-                    addAccountInfo.insertAccountDB(cusIDs,accountInfoArrayList);
+                    pr.insertAccountToDB(cusIDs,accountInfoArrayList);
 
-                }  catch (CustomizedException e){
+                } catch (CustomizedException e){
                     throw new CustomizedException("Input Failure: Invalid Customer List");
                 }
         }
@@ -65,7 +68,7 @@ public class AddCustomer {
         }
 
         public int[] insertToDB (ArrayList<Customer> customerArrayList) throws CustomizedException {
-            return dbOperation.insertDetailToDB(customerArrayList);
+            return pr.insertDetailToDB(customerArrayList);
          }
 }
 

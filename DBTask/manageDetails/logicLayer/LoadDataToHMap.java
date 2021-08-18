@@ -1,19 +1,23 @@
 package manageDetails.manageDetails.logicLayer;
 
-import manageDetails.manageDetails.persistence.DBOperation;
-import manageDetails.manageDetails.PersistanceException.CustomizedException;
+import manageDetails.manageDetails.BankException.CustomizedException;
+import manageDetails.manageDetails.persistence.PersistenceManager;
 import manageDetails.manageDetails.pojo.AccountInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
-public class LoadData {
-    DBOperation dbOperation =  new DBOperation();
+public class LoadDataToHMap {
+    PersistenceManager pr;
     HashMap <Integer, HashMap<Long, AccountInfo> > outerHashMap = new HashMap<>();
 
-    public String loadHashMap() throws CustomizedException {
+    public LoadDataToHMap() throws CustomizedException {
+        DataHandler dbHandler = new DataHandler();
+        pr = dbHandler.getPersistenceManager();
+    }
+
+    public void loadHashMap() throws CustomizedException {
         //load hashMap from DB
-        ArrayList<AccountInfo> dbArrayList = dbOperation.accountInfoRecords();
+        List<AccountInfo> dbArrayList = pr.accountInfoRecords();
         try {
             for (AccountInfo accountinfo : dbArrayList) {
                 int cusId = accountinfo.getCusId();
@@ -25,8 +29,6 @@ public class LoadData {
                 }
                 innerHashMap.put(accNo, accountinfo);
             }
-            System.out.println(outerHashMap.entrySet());
-            return "HashMap Loaded Successfully";
         }
         catch (Exception e) {
             throw new CustomizedException("AccountInfo HashMap not loaded");
@@ -35,7 +37,7 @@ public class LoadData {
 
     public void loadSpecific(Integer cusId) throws CustomizedException {
         try {
-            ArrayList<String> arrayList = new ArrayList<>();
+            List<String> arrayList = new ArrayList<>();
             arrayList.add(outerHashMap.get(cusId).values().toString());
             System.out.println(arrayList);
         } catch (NullPointerException e){

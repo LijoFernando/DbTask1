@@ -1,21 +1,27 @@
 package manageDetails.manageDetails;
 
-import manageDetails.manageDetails.PersistanceException.CustomizedException;
-import manageDetails.manageDetails.persistence.DBOperation;
+import manageDetails.manageDetails.BankException.CustomizedException;
+import manageDetails.manageDetails.logicLayer.DataHandler;
+import manageDetails.manageDetails.persistence.PersistenceManager;
 import manageDetails.manageDetails.pojo.AccountInfo;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class AddAccountInfo {
     Scanner input = new Scanner(System.in);
-    DBOperation dbConnection = new DBOperation();
     AccountInfo accountInfo = new AccountInfo();
     ArrayList<AccountInfo> accountInfoArrayList = new ArrayList<>();
+
+    public AddAccountInfo() throws CustomizedException {
+        DataHandler dbHandler = new DataHandler();
+         pr = dbHandler.getPersistenceManager();
+    }
+
     public void addAccountForExistingCustomer(Integer cusID) throws CustomizedException {
-        String status = dbConnection.checkCustomerStatus(cusID);
-        if(status != "Inactive") {
+        String status = pr.checkCustomerStatus(cusID);
+        if(status.equals("Active")) {
             System.out.println(status);
+
         } else {
             System.out.println("Customer Record Deleted");
         }
@@ -31,19 +37,16 @@ public class AddAccountInfo {
             input.nextLine();
             System.out.println("Enter the Branch Name: ");
             String accBranch = input.nextLine();
-
-            accountInfo.setAccNo(accNumber);
-            accountInfo.setAccBalance(accBalance);
-            accountInfo.setAccBranch(accBranch);
-            accountInfoArrayList.add(accountInfo);
+                accountInfo.setAccNo(accNumber);
+                accountInfo.setAccBalance(accBalance);
+                accountInfo.setAccBranch(accBranch);
+                accountInfoArrayList.add(accountInfo);
         } catch (Exception e) {
             throw new CustomizedException("Enter Valid input", e);
         }
         return accountInfoArrayList;
     }
-        public void insertAccountDB(int[] cusId,ArrayList<AccountInfo> accountInfoArrayList) throws CustomizedException {
-            dbConnection.insertAccountToDB(cusId,accountInfoArrayList);
-        }
-    }
+
+}
 
 

@@ -1,7 +1,5 @@
 package manageDetails.manageDetails.pojo;
 
-import java.sql.Date;
-
 public class Customer {
     //Variable
     private String name;
