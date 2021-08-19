@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.Properties;
 
 public class DataHandler {
-    private static PersistenceManager prManager;
+    private static  PersistenceManager prManager = null;
 
     public static String fileHandler() throws CustomizedException {
         String className = " ";
@@ -16,7 +16,7 @@ public class DataHandler {
             propertyFile.load(reader);
             String dbName = "MySQL";
             className = propertyFile.getProperty(dbName);
-            if(className.isEmpty()){
+            if (className.isEmpty()){
                 reader.close();
                 System.out.println("Class Name Not Found");
                 System.exit(0);

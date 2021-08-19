@@ -5,23 +5,20 @@ import manageDetails.manageDetails.configuration.DataHandler;
 import manageDetails.manageDetails.persistence.PersistenceManager;
 import manageDetails.manageDetails.pojo.AccountInfo;
 
+import java.sql.Date;
 import java.util.*;
 
 public class LoadDataToHMap {
-    static HashMap <Integer, HashMap<Long, AccountInfo> > outerHashMap = new HashMap<>();
+    private static final HashMap <Integer, HashMap<Long, AccountInfo> > outerHashMap = new HashMap<>();
 
-    public void loadHashMap() throws CustomizedException {
+    public static void loadHashMap() throws CustomizedException {
         //load hashMap from DB
         List<AccountInfo> dbArrayList = DataHandler.getPersistenceManager().accountInfoRecords();
         try {
             for (AccountInfo accInfo : dbArrayList) {
                 int cusId = accInfo.getCusId();
                 long accNo = accInfo.getAccNo();
-                HashMap<Long, AccountInfo> innerHashMap = outerHashMap.get(cusId);
-                if (innerHashMap == null) {
-                    innerHashMap = new HashMap<>();
-                    outerHashMap.put(cusId, innerHashMap);
-                }
+                HashMap<Long, AccountInfo> innerHashMap = outerHashMap.computeIfAbsent(cusId, k -> new HashMap<>());
                 innerHashMap.put(accNo, accInfo);
             }
         }
@@ -30,7 +27,7 @@ public class LoadDataToHMap {
         }
     }
 
-    public void loadSpecific(Integer cusId) throws CustomizedException {
+    public static void loadSpecific(Integer cusId) throws CustomizedException {
         try {
             List<String> arrayList = new ArrayList<>();
             arrayList.add(outerHashMap.get(cusId).values().toString());

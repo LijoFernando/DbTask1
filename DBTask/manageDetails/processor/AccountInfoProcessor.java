@@ -11,7 +11,7 @@ import java.util.*;
 public class AccountInfoProcessor {
     private static final Scanner input = new Scanner(System.in);
     private static final AccountInfo accountInfo = new AccountInfo();
-    private static List<AccountInfo> accountInfoArrayList = new ArrayList<>();
+    private static final List<AccountInfo> accountInfoArrayList = new ArrayList<>();
 
     //Add AccountInformation for Existing Customer
     public static void addAccountForExistingCustomer() throws CustomizedException {
