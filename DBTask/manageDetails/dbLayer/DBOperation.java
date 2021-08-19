@@ -135,12 +135,11 @@ public class DBOperation implements PersistenceManager {
     }
 
     //Delete Customer From Database
-    public String deleteCustomer(Integer cusId) throws CustomizedException {
+    public void deleteCustomer(Integer cusId) throws CustomizedException {
         String query="Update CustomerInfo SET CusStatus = IF(CusStatus = 1, 2, CusStatus) WHERE CusId ="+cusId+"";
         try {
              Statement st = getConnection().createStatement();
              st.executeUpdate(query);
-             return "Customer Deleted Successfully";
         } catch (SQLException e){
             throw  new CustomizedException("Customer Deletion Failed // No Records Found");
         }

@@ -11,6 +11,6 @@ public interface PersistenceManager {
     int[] persistCustomerList (List<Customer> customerArrayList) throws CustomizedException;
     String checkCustomerStatus(Integer cusID) throws CustomizedException;
     void insertAccountToDB(int[] cusID, List<AccountInfo> accountInfoArrayList) throws CustomizedException;
-    String deleteCustomer(Integer cusId) throws CustomizedException;
+    void deleteCustomer(Integer cusId) throws CustomizedException;
 
 }

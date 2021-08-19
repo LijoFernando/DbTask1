@@ -13,8 +13,6 @@ import java.util.Scanner;
 
 public class TaskRunner {
     public static void main(String[] args) throws IOException, CustomizedException {
-        CustomerProcessor customerProcessorDetail = new CustomerProcessor();
-        AccountInfoProcessor accountInfoProcessor = new AccountInfoProcessor();
         //loaded HashMap From Database
         LoadDataToHMap syncHashMap = new LoadDataToHMap();
 
@@ -39,7 +37,7 @@ public class TaskRunner {
 
         if(choice == 1) {
             try {
-                customerProcessorDetail.chooseNoOfCustomer();
+                CustomerProcessor.chooseNoOfCustomer();
             }
             catch (CustomizedException e){
                 System.out.println(e.getMessage());
@@ -48,14 +46,7 @@ public class TaskRunner {
 
         else if(choice == 2) {
 
-            try {
-                System.out.println("Enter your customer ID");
-                int cusId = input.nextInt();
-                accountInfoProcessor.addAccountForExistingCustomer(cusId);
 
-            } catch(CustomizedException e) {
-                System.out.println( e.getMessage());
-            }
         }
 
         else if(choice == 3){
@@ -76,17 +67,9 @@ public class TaskRunner {
             }
         }
 
-        //Delete Customer From Database
+        //Add account for Existing Customer
         else if(choice == 5){
-            System.out.println("Enter CustomerId to Delete");
-            int cusId = input.nextInt();
-            try{
-                DataStoreHelper dataStoreHelper = new DataStoreHelper();
-                dataStoreHelper.deleteCustomerInfo(cusId);
-            } catch (CustomizedException e){
-                e.printStackTrace();
-                System.out.println(e.getMessage());
-            }
+          AccountInfoProcessor.addAccountForExistingCustomer();
         }
         else {
             System.out.println("Enter Valid Choice");

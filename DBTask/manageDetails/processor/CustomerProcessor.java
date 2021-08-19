@@ -8,13 +8,13 @@ import java.sql.Date;
 import java.util.*;
 
 public class CustomerProcessor {
-        Scanner input = new Scanner(System.in);
-        Customer customerInput = null;
-        AccountInfoProcessor accountInfoProcessor;
-        ArrayList<Customer> customerArrayList;
-        ArrayList<AccountInfo> accountInfoArrayList;
+        static Scanner input = new Scanner(System.in);
+        static Customer customerInput = null;
+        static AccountInfoProcessor accountInfoProcessor;
+        static ArrayList<Customer> customerArrayList;
+        static ArrayList<AccountInfo> accountInfoArrayList;
 
-        public void chooseNoOfCustomer() throws CustomizedException {
+        public static void chooseNoOfCustomer() throws CustomizedException {
                 System.out.print("Enter No of Record to insert: ");
                 int noOfRecords = input.nextInt();
                 int[] cusIDs = null;
@@ -23,17 +23,17 @@ public class CustomerProcessor {
                 accountInfoArrayList = new  ArrayList<>();
                 try {
                     for (int i = 0; i < noOfRecords; i++) {
-                        this.customerInput(i);
+                        CustomerProcessor.customerInput(i);
                         accountInfoArrayList =  accountInfoProcessor.accountInput();
                     }
-                    cusIDs = insertToDB(customerArrayList);
+                    cusIDs = CustomerProcessor.insertToDB(customerArrayList);
                     DataHandler.getPersistenceManager().insertAccountToDB(cusIDs,accountInfoArrayList);
                 } catch (CustomizedException e){
                     throw new CustomizedException("Input Failure: Invalid Customer List");
                 }
         }
 
-        private void customerInput(Integer nthRecord) throws CustomizedException {
+        private static void customerInput(Integer nthRecord) throws CustomizedException {
                 try {
                     input.nextLine();
                     System.out.println("Enter Customer Details of : "+(nthRecord+1));
@@ -59,7 +59,7 @@ public class CustomerProcessor {
                 }
         }
 
-        public int[] insertToDB (ArrayList<Customer> customerArrayList) throws CustomizedException {
+        public static int[] insertToDB (ArrayList<Customer> customerArrayList) throws CustomizedException {
             return DataHandler.getPersistenceManager().persistCustomerList(customerArrayList);
          }
 }

@@ -2,7 +2,7 @@ package manageDetails.manageDetails.configuration;
 import manageDetails.manageDetails.BankException.CustomizedException;
 import manageDetails.manageDetails.persistence.PersistenceManager;
 
-import java.io.FileInputStream;
+import java.io.*;
 import java.util.Properties;
 
 public class DataHandler {
@@ -11,7 +11,7 @@ public class DataHandler {
     public static String fileHandler() throws CustomizedException {
         String className = " ";
         try {
-            FileInputStream reader = new FileInputStream("/Users/inc5/IdeaProjects/DbTask1/DBTask/manageDetails/mySQLDB.properties");
+            InputStream reader = new FileInputStream("DBTask/manageDetails/mySQLDB.properties");
             Properties propertyFile = new Properties();
             propertyFile.load(reader);
             String dbName = "MySQL";
