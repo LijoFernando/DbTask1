@@ -8,23 +8,22 @@ import java.sql.Date;
 import java.util.*;
 
 public class CustomerProcessor {
-        static Scanner input = new Scanner(System.in);
+        static final Scanner input = new Scanner(System.in);
         static Customer customerInput = null;
-        static AccountInfoProcessor accountInfoProcessor;
         static ArrayList<Customer> customerArrayList;
-        static ArrayList<AccountInfo> accountInfoArrayList;
+        static List<AccountInfo> accountInfoArrayList;
 
         public static void chooseNoOfCustomer() throws CustomizedException {
                 System.out.print("Enter No of Record to insert: ");
                 int noOfRecords = input.nextInt();
-                int[] cusIDs = null;
-                accountInfoProcessor = new AccountInfoProcessor();
+                input.nextLine();
+                int[] cusIDs;
                 customerArrayList = new ArrayList<>();
                 accountInfoArrayList = new  ArrayList<>();
                 try {
                     for (int i = 0; i < noOfRecords; i++) {
                         CustomerProcessor.customerInput(i);
-                        accountInfoArrayList =  accountInfoProcessor.accountInput();
+                        accountInfoArrayList =  AccountInfoProcessor.accountInput();
                     }
                     cusIDs = CustomerProcessor.insertToDB(customerArrayList);
                     DataHandler.getPersistenceManager().insertAccountToDB(cusIDs,accountInfoArrayList);
@@ -35,7 +34,6 @@ public class CustomerProcessor {
 
         private static void customerInput(Integer nthRecord) throws CustomizedException {
                 try {
-                    input.nextLine();
                     System.out.println("Enter Customer Details of : "+(nthRecord+1));
                     System.out.println("Enter Customer Name: ");
                     String name = input.nextLine();

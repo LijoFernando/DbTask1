@@ -18,7 +18,7 @@ public class DataHandler {
             className = propertyFile.getProperty(dbName);
             if(className.isEmpty()){
                 reader.close();
-                System.out.println("Empty Class Name");
+                System.out.println("Class Name Not Found");
                 System.exit(0);
             }
             return className;

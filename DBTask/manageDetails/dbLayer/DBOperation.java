@@ -22,9 +22,9 @@ public class DBOperation implements PersistenceManager {
     }
 
     //All Query
-    private static String selectAllRecordsFromAccountInfo = "SELECT * FROM AccountInfo";
-    private static String insertRecordsToCustomerTable = "insert into CustomerInfo (CusName, CusDoB, Location) values (?, ?, ?)";
-    private static String insertRecordsToAccountInfoTable = "insert into AccountInfo (AccNumber, AccBalance, Branch, CusID ) values (?, ?, ?,?)";
+    private static final String selectAllRecordsFromAccountInfo = "SELECT * FROM AccountInfo";
+    private static final String insertRecordsToCustomerTable = "insert into CustomerInfo (CusName, CusDoB, Location) values (?, ?, ?)";
+    private static final String insertRecordsToAccountInfoTable = "insert into AccountInfo (AccNumber, AccBalance, Branch, CusID ) values (?, ?, ?,?)";
 
     @Override
     public List<AccountInfo> accountInfoRecords() throws CustomizedException {
@@ -60,8 +60,7 @@ public class DBOperation implements PersistenceManager {
             PreparedStatement ps = getConnection().prepareStatement(insertRecordsToCustomerTable, Statement.RETURN_GENERATED_KEYS);
             int[] cusId = new int[customerArrayList.size()];
             try {
-                for (int i = 0; i < customerArrayList.size(); i++) {
-                    Customer customer = customerArrayList.get(i);
+                for (Customer customer : customerArrayList) {
                     String name = customer.getName();
                     long date = customer.getDofBirth();
                     String location = customer.getLocation();

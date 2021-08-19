@@ -1,17 +1,10 @@
 package manageDetails.manageDetails.BankException;
 
-
 public class CustomizedException extends Exception {
-
-    public CustomizedException() {
-        super();
-    }
-
+    //Exception Message
     public CustomizedException(String msg){
             super(msg);
         }
-
-        public CustomizedException(String s,Throwable error) {
-            super(s, error);
-        }
+    //Exception Message with Error
+    public CustomizedException(String s,Throwable error) { super(s, error); }
 }
