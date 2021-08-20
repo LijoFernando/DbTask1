@@ -6,10 +6,10 @@ import java.io.*;
 import java.util.Properties;
 
 public class DataHandler {
-    private static  PersistenceManager prManager = null;
+    private static PersistenceManager prManager = null;
 
     public static String fileHandler() throws CustomizedException {
-        String className = " ";
+        String className;
         try {
             InputStream reader = new FileInputStream("DBTask/manageDetails/mySQLDB.properties");
             Properties propertyFile = new Properties();

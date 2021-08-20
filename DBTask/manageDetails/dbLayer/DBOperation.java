@@ -22,16 +22,44 @@ public class DBOperation implements PersistenceManager {
     }
 
     //All Query
+    private static final String selectAllRecordsFromCustomerInfo = "SELECT * FROM CustomerInfo";
     private static final String selectAllRecordsFromAccountInfo = "SELECT * FROM AccountInfo";
     private static final String insertRecordsToCustomerTable = "insert into CustomerInfo (CusName, CusDoB, Location) values (?, ?, ?)";
     private static final String insertRecordsToAccountInfoTable = "insert into AccountInfo (AccNumber, AccBalance, Branch, CusID ) values (?, ?, ?,?)";
 
     @Override
+    public List<Customer> customerInfoRecords() throws CustomizedException {
+        List<Customer> customerInfoList = new ArrayList<>();
+        try {
+            PreparedStatement ps  = getConnection().prepareStatement(selectAllRecordsFromCustomerInfo);
+            ResultSet rs  = ps.executeQuery();
+            try {
+                while (rs.next()) {
+                    Customer customerInfo = new Customer();
+                    customerInfo.setCusID(rs.getInt(1));
+                    customerInfo.setName(rs.getString(2));
+                    customerInfo.setDofBirth(rs.getLong(3));
+                    customerInfo.setLocation(rs.getString(4));
+                    customerInfo.setCusStatus(rs.getString(5));
+                    customerInfoList.add(customerInfo);
+                }
+            } finally {
+                rs.close();
+                ps.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new CustomizedException("Customer HashMap Loading is Unsuccessful !!");
+        }
+        return customerInfoList;
+    }
+
+    @Override
     public List<AccountInfo> accountInfoRecords() throws CustomizedException {
         List<AccountInfo> accountInfoArray = new ArrayList<>();
         try {
-            PreparedStatement ps  = getConnection().prepareStatement(selectAllRecordsFromAccountInfo);
-            ResultSet rs  = ps.executeQuery();
+            PreparedStatement ps = getConnection().prepareStatement(selectAllRecordsFromAccountInfo);
+            ResultSet rs = ps.executeQuery();
                 try {
                     while (rs.next()) {
                         AccountInfo accountInfo = new AccountInfo();

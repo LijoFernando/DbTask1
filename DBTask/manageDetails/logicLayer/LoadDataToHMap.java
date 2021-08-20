@@ -2,38 +2,64 @@ package manageDetails.manageDetails.logicLayer;
 
 import manageDetails.manageDetails.BankException.CustomizedException;
 import manageDetails.manageDetails.configuration.DataHandler;
-import manageDetails.manageDetails.persistence.PersistenceManager;
 import manageDetails.manageDetails.pojo.AccountInfo;
+import manageDetails.manageDetails.pojo.Customer;
 
-import java.sql.Date;
 import java.util.*;
 
 public class LoadDataToHMap {
-    private static final HashMap <Integer, HashMap<Long, AccountInfo> > outerHashMap = new HashMap<>();
+    //Customer Information
+    private static Map <Integer, Customer> customerInfoHashMap = new HashMap<>();
+    //Customer Account Information
+    private static Map <Integer, HashMap<Long, AccountInfo> > accountInfoHashMap = new HashMap<>();
 
+    //load All data to HashMap
     public static void loadHashMap() throws CustomizedException {
-        //load hashMap from DB
-        List<AccountInfo> dbArrayList = DataHandler.getPersistenceManager().accountInfoRecords();
+
+        //ArrayList of customer and Account Details
+        List <Customer> customerInfoList = DataHandler.getPersistenceManager().customerInfoRecords();
+        List <AccountInfo> accountInfoList = DataHandler.getPersistenceManager().accountInfoRecords();
         try {
-            for (AccountInfo accInfo : dbArrayList) {
+            for (Customer customerInfo: customerInfoList){
+                int cusId = customerInfo.getCusID();
+                customerInfoHashMap.put(cusId,customerInfo);
+            }
+
+            System.out.println(customerInfoHashMap);
+            for (AccountInfo accInfo : accountInfoList) {
                 int cusId = accInfo.getCusId();
                 long accNo = accInfo.getAccNo();
-                HashMap<Long, AccountInfo> innerHashMap = outerHashMap.computeIfAbsent(cusId, k -> new HashMap<>());
+                HashMap<Long, AccountInfo> innerHashMap = accountInfoHashMap.computeIfAbsent(cusId, k -> new HashMap<>());
                 innerHashMap.put(accNo, accInfo);
             }
+            System.out.println(accountInfoHashMap.entrySet());
         }
         catch (Exception e) {
             throw new CustomizedException("AccountInfo HashMap not loaded");
         }
     }
 
-    public static void loadSpecific(Integer cusId) throws CustomizedException {
+    //Get Account Details For Specific Customer
+    public static List<String> getSpecificCustomerAccount(Integer cusId) throws CustomizedException {
         try {
-            List<String> arrayList = new ArrayList<>();
-            arrayList.add(outerHashMap.get(cusId).values().toString());
-            System.out.println(arrayList);
+            List <String> specificAccountList = new ArrayList<>();
+            specificAccountList.add(accountInfoHashMap.get(cusId).values().toString());
+            System.out.println(specificAccountList);
+            return specificAccountList ;
         } catch (NullPointerException e){
             throw  new CustomizedException("Customer ID is Invalid");
         }
     }
+
+    public static Map<Integer,Customer> getCustomerHMap(){
+        if(customerInfoHashMap!=null) {
+            return customerInfoHashMap;
+        }
+        return null;
+    }
+//    public static Boolean isActive(Integer cusId) {
+//        HashMap<Long,AccountInfo> innerHasMap = outerHashMap.get(cusId);
+//
+//        return true;
+//    }
 }

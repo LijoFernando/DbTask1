@@ -8,9 +8,9 @@ import java.sql.Date;
 import java.util.*;
 
 public class CustomerProcessor {
-        static final Scanner input = new Scanner(System.in);
+        private static final Scanner input = new Scanner(System.in);
         static Customer customerInput = null;
-        static ArrayList<Customer> customerArrayList;
+        static List<Customer> customerArrayList;
         static List<AccountInfo> accountInfoArrayList;
 
         public static void chooseNoOfCustomer() throws CustomizedException {
@@ -57,7 +57,7 @@ public class CustomerProcessor {
                 }
         }
 
-        public static int[] insertToDB (ArrayList<Customer> customerArrayList) throws CustomizedException {
+        public static int[] insertToDB (List<Customer> customerArrayList) throws CustomizedException {
             return DataHandler.getPersistenceManager().persistCustomerList(customerArrayList);
          }
 }

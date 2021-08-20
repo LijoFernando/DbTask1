@@ -29,7 +29,9 @@ public class TaskRunner {
                 "\n1.Add new Customer. " +
                 "\n2.Add Bank Detail for Existing Customer. " +
                 "\n3.get AccountInfo of customer from HMap"+
-                "\n4.Print HashMap ");
+                "\n4.Print HashMap " +
+                "\n5.check Customer Active Status"
+        );
         System.out.print("Enter ur choice: ");
         int choice = input.nextInt();
         if(choice == 1) {
@@ -41,20 +43,22 @@ public class TaskRunner {
             }
         }
         else if(choice == 2) {
-
+            AccountInfoProcessor.addAccountForExistingCustomer();
         }
         else if(choice == 3){
             System.out.println("Enter id: ");
             int cusId = input.nextInt();
             try {
-                LoadDataToHMap.loadSpecific(cusId);
+               LoadDataToHMap.getSpecificCustomerAccount(cusId);
             } catch(CustomizedException e) {
                 System.out.println(e.getMessage());
             }
         }
         //Add account for Existing Customer
         else if(choice == 4){
-          AccountInfoProcessor.addAccountForExistingCustomer();
+            System.out.println("Enter CusID");
+            int cusID =input.nextInt();
+          DataStoreHelper.checkCustomer(cusID);
         }
         else {
             System.out.println("Enter Valid Choice");
