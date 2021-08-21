@@ -9,13 +9,16 @@ import java.util.*;
 
 public class LoadDataToHMap {
     //Customer Information
-    private static Map <Integer, Customer> customerInfoHashMap = new HashMap<>();
+    public static Map<Integer, Customer> customerInfoHashMap = null ;
     //Customer Account Information
-    private static Map <Integer, HashMap<Long, AccountInfo> > accountInfoHashMap = new HashMap<>();
+    public static Map<Integer,Map<Long, AccountInfo> > accountInfoHashMap = null;
+    //Inactive Customer
+    public static ArrayList<Integer> deletedList = null;
 
     //load All data to HashMap
     public static void loadHashMap() throws CustomizedException {
-
+        customerInfoHashMap = new HashMap<>();
+        accountInfoHashMap = new HashMap<>();
         //ArrayList of customer and Account Details
         List <Customer> customerInfoList = DataHandler.getPersistenceManager().customerInfoRecords();
         List <AccountInfo> accountInfoList = DataHandler.getPersistenceManager().accountInfoRecords();
@@ -29,7 +32,7 @@ public class LoadDataToHMap {
             for (AccountInfo accInfo : accountInfoList) {
                 int cusId = accInfo.getCusId();
                 long accNo = accInfo.getAccNo();
-                HashMap<Long, AccountInfo> innerHashMap = accountInfoHashMap.computeIfAbsent(cusId, k -> new HashMap<>());
+                Map<Long, AccountInfo> innerHashMap = accountInfoHashMap.computeIfAbsent(cusId, k -> new HashMap<>());
                 innerHashMap.put(accNo, accInfo);
             }
             System.out.println(accountInfoHashMap.entrySet());
@@ -39,27 +42,36 @@ public class LoadDataToHMap {
         }
     }
 
+    //returnCustomerMap And AccountMap
+    public static Map<Integer,Customer> getCustomerHMap(){
+        return  customerInfoHashMap;
+    }
+    public static Map<Integer,Map<Long,AccountInfo>> getAccountInfoHMap(){
+        return accountInfoHashMap;
+    }
+
+    //List Of DELETED ACCOUNT
+    public static ArrayList<Integer> deletedCustomer(){
+        Collection<Customer> customersList = getCustomerHMap().values();
+        deletedList = new ArrayList<>();
+        for (Customer cus:customersList) {
+            if(cus.getCusStatus().equals("Inactive")){
+                deletedList.add(cus.getCusID());
+            }
+        }
+        return deletedList;
+    }
+
     //Get Account Details For Specific Customer
     public static List<String> getSpecificCustomerAccount(Integer cusId) throws CustomizedException {
         try {
-            List <String> specificAccountList = new ArrayList<>();
-            specificAccountList.add(accountInfoHashMap.get(cusId).values().toString());
-            System.out.println(specificAccountList);
+            List<String> specificAccountList = new ArrayList<>();
+            if(!deletedList.contains(cusId)){
+                accountInfoHashMap.get(cusId);
+            }
             return specificAccountList ;
         } catch (NullPointerException e){
             throw  new CustomizedException("Customer ID is Invalid");
         }
     }
-
-    public static Map<Integer,Customer> getCustomerHMap(){
-        if(customerInfoHashMap!=null) {
-            return customerInfoHashMap;
-        }
-        return null;
-    }
-//    public static Boolean isActive(Integer cusId) {
-//        HashMap<Long,AccountInfo> innerHasMap = outerHashMap.get(cusId);
-//
-//        return true;
-//    }
 }

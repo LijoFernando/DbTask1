@@ -117,23 +117,6 @@ public class DBOperation implements PersistenceManager {
 
     }
 
-    //customer Check (Active or Inactive)
-    public String checkCustomerStatus(Integer cusID) throws CustomizedException {
-        String query ="select CusStatus from CustomerInfo Where CusId = "+cusID+"";
-        ResultSet rs = null;
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(query);
-            rs = ps.executeQuery();
-            String status = null;
-            while(rs.next()){
-                status = rs.getString(1);
-            }
-            return status;
-        }catch (SQLException e){
-            throw new CustomizedException("Database Connection Error While Checking Customer");
-        }
-    }
-
     //Insert AccountInfo to Database
     public void insertAccountToDB(int[] cusID, List<AccountInfo> accountInfoArrayList) throws CustomizedException {
             try {

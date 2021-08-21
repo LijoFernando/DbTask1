@@ -16,6 +16,7 @@ public class TaskRunner {
 
         try {
             LoadDataToHMap.loadHashMap();
+            LoadDataToHMap.deletedCustomer();
             PersistenceManager pM = new DBOperation();
         } catch(CustomizedException e) {
             e.printStackTrace();
@@ -28,9 +29,9 @@ public class TaskRunner {
         System.out.println("Select from (1-3)" +
                 "\n1.Add new Customer. " +
                 "\n2.Add Bank Detail for Existing Customer. " +
-                "\n3.get AccountInfo of customer from HMap"+
-                "\n4.Print HashMap " +
-                "\n5.check Customer Active Status"
+                "\n3.get Specific customer AccountInfo from HMap"+
+                "\n4.Delete Existing Customer " +
+                "\n5. "
         );
         System.out.print("Enter ur choice: ");
         int choice = input.nextInt();
@@ -58,12 +59,16 @@ public class TaskRunner {
         else if(choice == 4){
             System.out.println("Enter CusID");
             int cusID =input.nextInt();
-          DataStoreHelper.checkCustomer(cusID);
+          DataStoreHelper.deleteExistingCustomer(cusID);
+        }
+        else if(choice == 5) {
+
         }
         else {
             System.out.println("Enter Valid Choice");
 
         }
+
     }
 }
 
