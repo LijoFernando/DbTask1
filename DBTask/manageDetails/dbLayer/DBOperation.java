@@ -159,7 +159,6 @@ public class DBOperation implements PersistenceManager {
 //    }
 
     public void makeTransaction(Transaction transaction) throws CustomizedException {
-        ResultSet rs = null;
         try {
             PreparedStatement ps = getConnection().prepareStatement(insertTransactionToTable);
             try {
@@ -174,12 +173,10 @@ public class DBOperation implements PersistenceManager {
                 ps.setString(3, transactType);
                 ps.setInt(4, amount);
                 ps.setInt(5, cusId);
-                ps.addBatch();
-                ps.executeBatch();
+                ps.executeUpdate();
             } catch (SQLException e) {
                 throw new CustomizedException("SQL Exception", e);
             } finally {
-                rs.close();
                 ps.close();
             }
         } catch (SQLException | CustomizedException e) {

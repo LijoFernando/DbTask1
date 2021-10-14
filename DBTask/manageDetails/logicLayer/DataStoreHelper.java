@@ -24,7 +24,8 @@ public class DataStoreHelper {
 
     public static boolean transactionDataValidator(int cusId, long accountNo, String transactType, int amount) throws CustomizedException {
         if (cusId != 0 && accountNo != 0 && transactType != null && amount != 0) {
-            if(transactType!=" withdraw" && transactType !="deposit"){
+            if(!transactType.equals("withdraw") && !transactType.equals("deposit")){
+                System.out.println("am here");
                 return false;
             }
             System.out.println("Validate Input Success");
