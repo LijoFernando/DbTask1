@@ -12,5 +12,6 @@ public interface PersistenceManager {
     int[] persistCustomerList (List<Customer> customerArrayList) throws CustomizedException;
     void insertAccountToDB(int[] cusID, List<AccountInfo> accountInfoArrayList) throws CustomizedException;
     void deleteCustomer(Integer cusId) throws CustomizedException;
+    void makeTransaction(Transaction transaction) throws CustomizedException;
 
 }

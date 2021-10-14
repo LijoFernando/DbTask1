@@ -11,7 +11,7 @@ public class DataHandler {
     public static String fileHandler() throws CustomizedException {
         String className;
         try {
-            InputStream reader = new FileInputStream("DBTask/manageDetails/mySQLDB.properties");
+            InputStream reader = new FileInputStream("C:\\Users\\inc5\\IdeaProjects\\DbTask1\\DBTask\\manageDetails\\mySQLDB.properties");
             Properties propertyFile = new Properties();
             propertyFile.load(reader);
             String dbName = "MySQL";

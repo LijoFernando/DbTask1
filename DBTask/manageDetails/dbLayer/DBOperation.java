@@ -4,7 +4,7 @@ import manageDetails.manageDetails.BankException.CustomizedException;
 import manageDetails.manageDetails.persistence.PersistenceManager;
 import manageDetails.manageDetails.pojo.*;
 
-import  java.sql.*;
+import java.sql.*;
 import java.util.*;
 
 public class DBOperation implements PersistenceManager {
@@ -24,15 +24,17 @@ public class DBOperation implements PersistenceManager {
     //All Query
     private static final String selectAllRecordsFromCustomerInfo = "SELECT * FROM CustomerInfo";
     private static final String selectAllRecordsFromAccountInfo = "SELECT * FROM AccountInfo";
+    private static final String getCustomerById = "SELECT * FROM TABLE WHERE ID = ? ";
     private static final String insertRecordsToCustomerTable = "insert into CustomerInfo (CusName, CusDoB, Location) values (?, ?, ?)";
     private static final String insertRecordsToAccountInfoTable = "insert into AccountInfo (AccNumber, AccBalance, Branch, CusID ) values (?, ?, ?,?)";
+    private static final String insertTransactionToTable = "insert into Transaction (TransactionId,AccountNo,TransactType,Amount,CusId) values (?,?,?,?,?)";
 
     @Override
     public List<Customer> customerInfoRecords() throws CustomizedException {
         List<Customer> customerInfoList = new ArrayList<>();
         try {
-            PreparedStatement ps  = getConnection().prepareStatement(selectAllRecordsFromCustomerInfo);
-            ResultSet rs  = ps.executeQuery();
+            PreparedStatement ps = getConnection().prepareStatement(selectAllRecordsFromCustomerInfo);
+            ResultSet rs = ps.executeQuery();
             try {
                 while (rs.next()) {
                     Customer customerInfo = new Customer();
@@ -60,29 +62,29 @@ public class DBOperation implements PersistenceManager {
         try {
             PreparedStatement ps = getConnection().prepareStatement(selectAllRecordsFromAccountInfo);
             ResultSet rs = ps.executeQuery();
-                try {
-                    while (rs.next()) {
-                        AccountInfo accountInfo = new AccountInfo();
-                        accountInfo.setAccId(rs.getInt(1));
-                        accountInfo.setAccNo(rs.getLong(2));
-                        accountInfo.setAccBalance(rs.getInt(3));
-                        accountInfo.setAccBranch(rs.getString(4));
-                        accountInfo.setCusId(rs.getInt(5));
-                        accountInfoArray.add(accountInfo);
-                    }
-                } finally {
-                    rs.close();
-                    ps.close();
+            try {
+                while (rs.next()) {
+                    AccountInfo accountInfo = new AccountInfo();
+                    accountInfo.setAccId(rs.getInt(1));
+                    accountInfo.setAccNo(rs.getLong(2));
+                    accountInfo.setAccBalance(rs.getInt(3));
+                    accountInfo.setAccBranch(rs.getString(4));
+                    accountInfo.setCusId(rs.getInt(5));
+                    accountInfoArray.add(accountInfo);
                 }
+            } finally {
+                rs.close();
+                ps.close();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new CustomizedException("Account HashMap Loading is Unsuccessful,Invalid Query!!");
         }
-    return accountInfoArray;
+        return accountInfoArray;
     }
 
     //insert Customer Info to Database
-    public int[] persistCustomerList (List<Customer> customerArrayList) throws CustomizedException {
+    public int[] persistCustomerList(List<Customer> customerArrayList) throws CustomizedException {
         ResultSet rs = null;
         try {
             PreparedStatement ps = getConnection().prepareStatement(insertRecordsToCustomerTable, Statement.RETURN_GENERATED_KEYS);
@@ -100,8 +102,8 @@ public class DBOperation implements PersistenceManager {
                 ps.executeBatch();
                 rs = ps.getGeneratedKeys();
                 int i = 0;
-                while(rs.next()) {
-                    cusId[i]= rs.getInt(1);
+                while (rs.next()) {
+                    cusId[i] = rs.getInt(1);
                     i++;
                 }
                 return cusId; //return Customers ID
@@ -119,39 +121,84 @@ public class DBOperation implements PersistenceManager {
 
     //Insert AccountInfo to Database
     public void insertAccountToDB(int[] cusID, List<AccountInfo> accountInfoArrayList) throws CustomizedException {
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(insertRecordsToAccountInfoTable);
             try {
-                PreparedStatement ps =  getConnection().prepareStatement(insertRecordsToAccountInfoTable);
-                try {
-                    for (int i = 0; i < accountInfoArrayList.size(); i++) {
-                        AccountInfo accountInfo = accountInfoArrayList.get(i);
-                        long accNo = accountInfo.getAccNo();
-                        int accBalance = accountInfo.getAccBalance();
-                        String accBranch = accountInfo.getAccBranch();
-                        int cusId = cusID[i];
-                        ps.setLong(1, accNo);
-                        ps.setInt(2, accBalance);
-                        ps.setString(3, accBranch);
-                        ps.setInt(4, cusId);
-                        ps.addBatch();
-                    }
-                    ps.executeBatch();
-                    System.out.println("Account Record inserted");
-                } finally {
-                    ps.close();
+                for (int i = 0; i < accountInfoArrayList.size(); i++) {
+                    AccountInfo accountInfo = accountInfoArrayList.get(i);
+                    long accNo = accountInfo.getAccNo();
+                    int accBalance = accountInfo.getAccBalance();
+                    String accBranch = accountInfo.getAccBranch();
+                    int cusId = cusID[i];
+                    ps.setLong(1, accNo);
+                    ps.setInt(2, accBalance);
+                    ps.setString(3, accBranch);
+                    ps.setInt(4, cusId);
+                    ps.addBatch();
                 }
-            } catch (SQLException e) {
-                throw new CustomizedException("Account Detail Submission Failed, Query Error");
+                ps.executeBatch();
+                System.out.println("Account Record inserted");
+            } finally {
+                ps.close();
             }
+        } catch (SQLException e) {
+            throw new CustomizedException("Account Detail Submission Failed, Query Error");
+        }
+    }
+
+//    public void isCustomerExist(Integer cusId) throws CustomizedException{
+//        ResultSet rs = null;
+//        try {
+//        PreparedStatement ps = getConnection().prepareStatement(getCustomerById);
+//        rs = ps.executeQuery();
+//
+//        } finally {
+//
+//        }
+//
+//    }
+
+    public void makeTransaction(Transaction transaction) throws CustomizedException {
+        ResultSet rs = null;
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(insertTransactionToTable);
+            try {
+                Integer transactionId = transaction.getTransactionId();
+                Long accountNo = transaction.getAccountNo();
+                String transactType = transaction.getTransactionType();
+                Integer amount = transaction.getAmount();
+                Integer cusId = transaction.getCusId();
+                //TransactionId,AccountNo,TransactType,Amount,CusId
+                ps.setInt(1, transactionId);
+                ps.setLong(2, accountNo);
+                ps.setString(3, transactType);
+                ps.setInt(4, amount);
+                ps.setInt(5, cusId);
+                ps.addBatch();
+                ps.executeBatch();
+            } catch (SQLException e) {
+                throw new CustomizedException("SQL Exception", e);
+            } finally {
+                rs.close();
+                ps.close();
+            }
+        } catch (SQLException | CustomizedException e) {
+            throw new CustomizedException("Customer Records Submission Unsuccessful", e);
+        }
+    }
+
+    public void getTransactions(Integer CusId) {
+
     }
 
     //Delete Customer From Database
     public void deleteCustomer(Integer cusId) throws CustomizedException {
-        String query="Update CustomerInfo SET CusStatus = IF(CusStatus = 1, 2, CusStatus) WHERE CusId ="+cusId+"";
+        String query = "Update CustomerInfo SET CusStatus = IF(CusStatus = 1, 2, CusStatus) WHERE CusId =" + cusId + "";
         try {
-             Statement st = getConnection().createStatement();
-             st.executeUpdate(query);
-        } catch (SQLException e){
-            throw  new CustomizedException("Customer Deletion Failed // No Records Found");
+            Statement st = getConnection().createStatement();
+            st.executeUpdate(query);
+        } catch (SQLException e) {
+            throw new CustomizedException("Customer Deletion Failed // No Records Found");
         }
     }
 }
