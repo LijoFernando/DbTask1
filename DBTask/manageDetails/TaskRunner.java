@@ -28,16 +28,18 @@ public class TaskRunner {
 
         //Choose the Operation to do!!
         Scanner input = new Scanner(System.in);
-        System.out.println("Select from (1-3)" +
-                "\n1.Add new Customer. " +
-                "\n2.Add Bank Detail for Existing Customer. " +
-                "\n3.get Specific customer AccountInfo from HMap"+
-                "\n4.Delete Existing Customer " +
-                "\n5.Make Transaction "
-        );
-        System.out.print("Enter ur choice: ");
-        int choice = input.nextInt();
+
         while(true) {
+            System.out.println("Select from (1-3)" +
+                    "\n1.Add new Customer. " +
+                    "\n2.Add Bank Detail for Existing Customer. " +
+                    "\n3.get Specific customer AccountInfo from HMap"+
+                    "\n4.Delete Existing Customer " +
+                    "\n5.Make Transaction "+
+                    "\n0.Exit"
+            );
+            System.out.print("Enter ur choice: ");
+            int choice = input.nextInt();
             switch (choice) {
                 case 1:
                     try {
@@ -90,7 +92,10 @@ public class TaskRunner {
                     transactionData.add(String.valueOf(cusId));
                     DataStoreHelper.makeTransaction(transactionData);
                     break;
-
+                case 6:
+                    System.out.println("Enter Customer Id to find Transaction");
+                    cusId = input.nextInt();
+                    DataStoreHelper.getTransactions(cusId);
                 case 0:
                     System.out.println("Exited");
                     System.exit(0);

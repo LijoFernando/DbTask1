@@ -34,7 +34,12 @@ public class DataStoreHelper {
             return false;
         }
     }
-
+    public static void getTransactions(Integer cusId) throws CustomizedException {
+        List<Transaction> transactionList = DataHandler.getPersistenceManager().getTransactions(cusId);
+        for (Transaction transaction : transactionList){
+            System.out.println(transaction.toString());
+        }
+    }
     //AccountNo,TransactType,Amount,CusId
     public static void makeTransaction(List<String> transactData) throws CustomizedException {
         Long accNo = Long.parseLong(transactData.get(0));

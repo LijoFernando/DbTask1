@@ -13,5 +13,5 @@ public interface PersistenceManager {
     void insertAccountToDB(int[] cusID, List<AccountInfo> accountInfoArrayList) throws CustomizedException;
     void deleteCustomer(Integer cusId) throws CustomizedException;
     void makeTransaction(Transaction transaction) throws CustomizedException;
-
+    List<Transaction> getTransactions(Integer CusId) throws CustomizedException;
 }

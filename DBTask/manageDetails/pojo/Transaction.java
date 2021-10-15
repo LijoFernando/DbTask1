@@ -57,5 +57,8 @@ public class Transaction {
 
     private int cusId;
 
-
+    @Override
+    public String toString() {
+        return  transactionId +" "+ accountNo +" "+ transactionType +" "+ amount +" "+ cusId;
+    }
 }

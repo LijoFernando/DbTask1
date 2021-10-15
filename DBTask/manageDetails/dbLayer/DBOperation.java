@@ -27,7 +27,7 @@ public class DBOperation implements PersistenceManager {
     private static final String getCustomerById = "SELECT * FROM TABLE WHERE ID = ? ";
     private static final String insertRecordsToCustomerTable = "insert into CustomerInfo (CusName, CusDoB, Location) values (?, ?, ?)";
     private static final String insertRecordsToAccountInfoTable = "insert into AccountInfo (AccNumber, AccBalance, Branch, CusID ) values (?, ?, ?,?)";
-    private static final String insertTransactionToTable = "insert into Transaction (TransactionId,AccountNo,TransactType,Amount,CusId) values (?,?,?,?,?)";
+    private static final String insertTransactionToTable = "insert into Transaction (TransactionId, AccountNo, TransactType, Amout, CusId) values (?, ?, ?, ?, ?)";
 
     @Override
     public List<Customer> customerInfoRecords() throws CustomizedException {
@@ -173,7 +173,7 @@ public class DBOperation implements PersistenceManager {
                 ps.setString(3, transactType);
                 ps.setInt(4, amount);
                 ps.setInt(5, cusId);
-                ps.executeUpdate();
+                ps.execute();
             } catch (SQLException e) {
                 throw new CustomizedException("SQL Exception", e);
             } finally {
@@ -184,8 +184,36 @@ public class DBOperation implements PersistenceManager {
         }
     }
 
-    public void getTransactions(Integer CusId) {
-
+    public List<Transaction> getTransactions(Integer cusID) throws CustomizedException {
+        final String getTransactionWithCusId = "select * from Transaction where AccountNo IN ( select AccNumber from AccountInfo where CusId = " + cusID + " )";
+        List<Transaction> transactionList = new ArrayList<>();
+        ResultSet rs = null;
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(getTransactionWithCusId);
+            rs = ps.executeQuery();
+            try {
+                while (rs.next()) {
+                    Integer transactId = rs.getInt(1);
+                    Integer accNo = rs.getInt(2);
+                    String transactionType = rs.getString(3);
+                    Integer amount = rs.getInt(4);
+                    Integer cusId = rs.getInt(5);
+                    Transaction transaction = new Transaction();
+                    transaction.setTransactionId(transactId);
+                    transaction.setAccountNo(accNo);
+                    transaction.setTransactionType(transactionType);
+                    transaction.setAmount(amount);
+                    transaction.setCusId(cusId);
+                    transactionList.add(transaction);
+                }
+                return transactionList;
+            } finally {
+                rs.close();
+                ps.close();
+            }
+        } catch (SQLException e) {
+            throw new CustomizedException("Transaction Record Not Found");
+        }
     }
 
     //Delete Customer From Database

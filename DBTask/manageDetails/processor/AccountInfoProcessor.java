@@ -1,6 +1,8 @@
 package manageDetails.manageDetails.processor;
 
 import manageDetails.manageDetails.BankException.CustomizedException;
+import manageDetails.manageDetails.configuration.DataHandler;
+import manageDetails.manageDetails.logicLayer.DataStoreHelper;
 import manageDetails.manageDetails.pojo.AccountInfo;
 
 import java.util.*;
@@ -12,10 +14,11 @@ public class AccountInfoProcessor {
 
     //Add AccountInformation for Existing Customer
     public static void addAccountForExistingCustomer() throws CustomizedException {
-           System.out.println("Enter Customer ID: ");
-           int cusID = input.nextInt();
+            System.out.println("Enter Customer ID: ");
+           int [] cusID = new int[1];
+           cusID[0]=input.nextInt();
            List<AccountInfo> accountInfoRecordList = AccountInfoProcessor.accountInput();
-           //DataStoreHelper.addAccountForExistingCustomer(cusID, accountInfoRecordList);
+           DataHandler.getPersistenceManager().insertAccountToDB(cusID,accountInfoRecordList);
     }
 
     //save Account Information to arraylist from userInput
